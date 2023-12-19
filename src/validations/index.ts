@@ -1,19 +1,15 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import basic from './basic';
-import aave from './aave';
-import nouns from './nouns';
-import timeperiod from './timeperiod';
 import passportGated from './passport-gated';
-import passportWeighted from './passport-weighted';
+import arbitrum from './arbitrum';
+import karmaEasAttestation from './karma-eas-attestation';
 
 const validationClasses = {
   basic,
-  aave,
-  nouns,
-  timeperiod,
   'passport-gated': passportGated,
-  'passport-weighted': passportWeighted
+  arbitrum: arbitrum,
+  'karma-eas-attestation': karmaEasAttestation
 };
 
 const validations = {};
@@ -49,11 +45,22 @@ Object.keys(validationClasses).forEach(function (validationName) {
   } catch (error) {
     about = '';
   }
+
+  const validationClass = validationClasses[validationName];
+  const validationInstance = new validationClass();
+
   validations[validationName] = {
-    validation: validationClasses[validationName],
+    validation: validationClass,
     examples,
     schema,
-    about
+    about,
+    id: validationInstance.id,
+    github: validationInstance.github,
+    version: validationInstance.version,
+    title: validationInstance.title,
+    description: validationInstance.description,
+    proposalValidationOnly: validationInstance.proposalValidationOnly,
+    votingValidationOnly: validationInstance.votingValidationOnly
   };
 });
 
